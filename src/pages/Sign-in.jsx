@@ -47,8 +47,12 @@ import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../compnents/OAuth";
+import { toast } from "react-toastify";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+
+
 export default function SignIn() {
-  const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -63,6 +67,21 @@ export default function SignIn() {
   }
   async function onSubmit(e) {
     e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      if (userCredential.user) {
+        toast.success('signed in ')
+        navigate("/");
+      }
+      else{toast.error('invaild password or email')}
+    } catch (error) {
+      toast.error('failed to signIN')
+    }
    
   }
   return (
