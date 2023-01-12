@@ -6,23 +6,31 @@ import {
   ForgotPassword,
   Offers,
   SignIn,
-  SignUp,
+  SignUp,CreateListing 
 } from "./pages/index";
 import Header from "./compnents/Header";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import PrivateRoute from "./compnents/PrivateRoute";
 function App() {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<PrivateRoute/>}>
         <Route path="/profile" element={<Profile />} />
+
+        </Route>
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/offers" element={<Offers />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/create-listing" element={<PrivateRoute/>}>
+        <Route path="/create-listing" element={<CreateListing />} />
+
+        </Route>
+
       </Routes>
       <div className="bg-red-500">Hello World</div>
       <ToastContainer
