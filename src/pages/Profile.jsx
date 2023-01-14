@@ -3,7 +3,7 @@ import {Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { db } from "../firebase";
-
+import React from "react";
 import {
   collection,
   deleteDoc,
@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { FcHome } from "react-icons/fc";
-
+import Listing from "../compnents/Listings";
 export default function Profile() {
   const auth = getAuth();
   const navigate = useNavigate()
@@ -27,7 +27,7 @@ export default function Profile() {
     email: auth?.currentUser?.email,
   });
   const { name, email } = formData;
-
+const [Listings,setListings] = React.useState([])
  function onLogout() {
   auth.signOut()
   navigate('/')
@@ -54,7 +54,50 @@ export default function Profile() {
   } catch (error) {
     toast.error("Could not update the profile details");
   }
-}  return (
+} 
+
+React.useEffect(() => {
+  async function fetchUserListings() {
+    const listingRef = collection(db, "listings");
+   
+    const q = query(
+      listingRef,
+      where("userRef", "==", auth.currentUser.uid),
+      orderBy("timestamp", "desc")
+    );
+
+    const querySnap = await getDocs(q);
+
+    let listings = [];
+    querySnap.forEach((doc) => {
+     
+      return listings.push({
+        id: doc.id,
+        data: doc.data(),
+      });
+    });
+    setListings(listings);
+    setLoading(false);
+  }
+  fetchUserListings();
+}, [auth.currentUser.uid]);
+
+
+//delete listing
+async function onDelete(listingg) {
+  console.log(1)
+  await deleteDoc(doc(db,'listings',listingg))
+  let updateListings = Listings.filter((listing) =>  {return listing.id!==listingg} )
+  setListings(updateListings)
+  toast.success('deleted')
+}
+
+//edit listing 
+async function onEdit (listing) {
+navigate(`/edit-listing/${listing}`)
+}
+
+return (
     <>
       <section className="max-w-6xl mx-auto flex justify-center items-center flex-col">
         <h1 className="text-3xl text-center mt-6 font-bold">My Profile</h1>
@@ -115,7 +158,28 @@ export default function Profile() {
           </button>
         </div>
       </section>
-     
+      <div className="max-w-6xl px-3 mt-6 mx-auto">
+
+        {!loading && Listings.length > 0 && (
+          <>
+            <h2 className="text-2xl text-center font-semibold mb-6">
+              My Listings
+            </h2>
+            <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+              {Listings.map((listing) => (
+                <Listing
+                  key={listing.id}
+                  id={listing.id}
+                  listing={listing.data}
+               onDelete= {() => {  onDelete(listing.id)  }
+              }
+              onEdit = {() => { onEdit(listing.id) }}
+                />
+              ))} 
+            </ul>
+          </>
+        )}
+      </div>
     </>
   );
 }

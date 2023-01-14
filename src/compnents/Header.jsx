@@ -16,7 +16,6 @@ const Header = () => {
     const [signed, setSigned] = React.useState("signIn");
     const border = (router) => {
         if (location?.pathname === router) {
-            console.log(location?.pathname === router)
             return true;
         }
     };
