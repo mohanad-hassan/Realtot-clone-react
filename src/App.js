@@ -6,7 +6,7 @@ import {
   ForgotPassword,
   Offers,
   SignIn,
-  SignUp,CreateListing ,EditListing
+  SignUp,CreateListing ,EditListing,Listing
 } from "./pages/index";
 import Header from "./compnents/Header";
 import { ToastContainer } from "react-toastify";
@@ -26,6 +26,7 @@ function App() {
         <Route path="/offers" element={<Offers />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/category/:categoryType/:listing" element={<Listing />} />
         <Route path="/create-listing" element={<PrivateRoute/>}>
         <Route path="/create-listing" element={<CreateListing />} />
 
