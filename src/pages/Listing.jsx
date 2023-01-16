@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router'
-import {doc,getDoc} from 'firebase/firestore'
-import {db} from '../firebase'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../firebase'
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, {
   EffectFade,
@@ -23,28 +23,28 @@ import { getAuth } from 'firebase/auth';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 const Listing = () => {
-    SwiperCore.use([Autoplay, Navigation, Pagination]);
-const auth = getAuth()
-    const params = useParams()
-    const [loading,setLoading]  = React.useState(true)
-    const [listing,setListing]  = React.useState({})
-    const [shareLinkCopied, setShareLinkCopied] = React.useState(false);
-    const [contactLandlord, setContactLandlord] = React.useState(false);
+  SwiperCore.use([Autoplay, Navigation, Pagination]);
+  const auth = getAuth()
+  const params = useParams()
+  const [loading, setLoading] = React.useState(true)
+  const [listing, setListing] = React.useState({})
+  const [shareLinkCopied, setShareLinkCopied] = React.useState(false);
+  const [contactLandlord, setContactLandlord] = React.useState(false);
 
-    React.useEffect(() => { 
-       async function fetchListing ()  { 
-        setLoading(true)
+  React.useEffect(() => {
+    async function fetchListing() {
+      setLoading(true)
 
-            const docref = doc(db,'listings',params.listing)
-const docsnap = await getDoc(docref)
-if (docsnap.exists()) {
-    setListing(docsnap.data());
-    setLoading(false);
-  }
-         }
-fetchListing()
-     },[params.listing])
-     if(loading) {return <p>Loading</p>}
+      const docref = doc(db, 'listings', params.listing)
+      const docsnap = await getDoc(docref)
+      if (docsnap.exists()) {
+        setListing(docsnap.data());
+        setLoading(false);
+      }
+    }
+    fetchListing()
+  }, [params.listing])
+  if (loading) { return <p>Loading</p> }
   return (
     <main>{listing?.name}
       <Swiper
@@ -85,17 +85,17 @@ fetchListing()
         </p>
       )}
 
-<div className="m-4 flex flex-col md:flex-row max-w-6xl lg:mx-auto p-4 rounded-lg shadow-lg bg-white lg:space-x-5">
+      <div className="m-4 flex flex-col md:flex-row max-w-6xl lg:mx-auto p-4 rounded-lg shadow-lg bg-white lg:space-x-5">
         <div className=" w-full ">
           <p className="text-2xl font-bold mb-3 text-blue-900">
             {listing.name} - ${" "}
             {listing.offer
               ? listing.discountedPrice
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               : listing.regularPrice
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             {listing.type === "rent" ? " / month" : ""}
           </p>
           <p className="flex items-center mt-6 mb-3 font-semibold">
